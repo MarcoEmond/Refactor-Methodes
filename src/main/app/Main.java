@@ -20,5 +20,5 @@ public class Main {
         ShipmentService service = new ShipmentService(new PricingService(), new PermissionService(),
                 new ManifestRepository(), new NotificationService());
         System.out.println(service.validateCalculatePrintSaveAndNotify(shipment));
-    }
+    }    //aaaa
 }
