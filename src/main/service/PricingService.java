@@ -2,6 +2,7 @@ package main.service;
 
 import main.domain.Customer;
 import main.domain.Planet;
+import main.domain.Shipment;
 
 import java.time.LocalDate;
 
@@ -10,18 +11,15 @@ public class PricingService {
     public double increaseByTenPercent(double price) { return price + price * 0.10; }
     public double increaseByTwentyPercent(double price) { return price + price * 0.20; }
 
-    public double calculatePrice(double weight, double declaredValue, boolean hazardous,
-                                 String originName, String originSector, int originSecurity,
-                                 String destinationName, String destinationSector, int destinationSecurity,
-                                 int loyaltyYears, boolean active, boolean suspended,
-                                 LocalDate departureDate) {
+    // a fix was made here , there was like 1 million arguments
+    public double calculatePrice(double weight, double declaredValue, boolean hazardous, Shipment shipment) {
         double result = weight * 2.25;
         if (declaredValue > 10000) result += declaredValue * 0.015;
         if (hazardous) result = increaseByTwentyPercent(result);
-        if (originSecurity >= 4 || destinationSecurity >= 4) result += 125;
-        if (!originSector.equals(destinationSector)) result += 80;
-        if (departureDate.getMonthValue() == 12 || departureDate.getMonthValue() <= 2) result += 45;
-        if (loyaltyYears >= 5 && active && !suspended) result *= 0.90;
+        if (shipment.getOrigin().getSecurityLevel() >= 4 || shipment.getDestination().getSecurityLevel() >= 4) result += 125;
+        if (!shipment.getDestination().getSector().equals(shipment.getOrigin().getSector())) result += 80;
+        if (shipment.getDepartureDate().getMonthValue() == 12 || shipment.getDepartureDate().getMonthValue() <= 2) result += 45;
+        if (shipment.getCustomer().getLoyaltyYears() >= 5 && shipment.getCustomer().isActive() && !shipment.getCustomer().isSuspended()) result *= 0.90;
         return result;
     }
 
