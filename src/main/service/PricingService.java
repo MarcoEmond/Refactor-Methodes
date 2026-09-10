@@ -7,15 +7,14 @@ import main.domain.Shipment;
 import java.time.LocalDate;
 
 public class PricingService {
-    public double increaseByFivePercent(double price) { return price + price * 0.05; }
-    public double increaseByTenPercent(double price) { return price + price * 0.10; }
-    public double increaseByTwentyPercent(double price) { return price + price * 0.20; }
+    //changed increase by percent , 5 10 and 20 , to a general one
+    public double increaseByXPercent(double price, double percentage) { return price + price * (percentage / 100);}
 
     // a fix was made here , there was like 1 million arguments
     public double calculatePrice(double weight, double declaredValue, boolean hazardous, Shipment shipment) {
         double result = weight * 2.25;
         if (declaredValue > 10000) result += declaredValue * 0.015;
-        if (hazardous) result = increaseByTwentyPercent(result);
+        if (hazardous) result = increaseByXPercent(result, 20);
         if (shipment.getOrigin().getSecurityLevel() >= 4 || shipment.getDestination().getSecurityLevel() >= 4) result += 125;
         if (!shipment.getDestination().getSector().equals(shipment.getOrigin().getSector())) result += 80;
         if (shipment.getDepartureDate().getMonthValue() == 12 || shipment.getDepartureDate().getMonthValue() <= 2) result += 45;

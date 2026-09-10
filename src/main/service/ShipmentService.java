@@ -19,6 +19,7 @@ public class ShipmentService {
 
 
     public String validateCalculatePrintSaveAndNotify(Shipment shipment) {
+
         // fix made here , 3 if to 1 if with every condition
         if (shipment.getCustomer().isActive() && !shipment.getCustomer().isSuspended() && !shipment.getCargo().isEmpty()) {
             double totalWeight = 0;
@@ -37,17 +38,7 @@ public class ShipmentService {
 
             shipment.setTotal(total);
             shipment.setStatus("READY");
-            String output;
-            if (total > 2000) {
-                output = "PRIORITY | " + shipment.getReference() + " | " + String.format("%.2f", total);
-                repository.save(shipment);
-                output += " | " + notificationService.confirmationFor(shipment);
-            } else {
-                output = "REGULAR | " + shipment.getReference() + " | " + String.format("%.2f", total);
-                repository.save(shipment);
-                output += " | " + notificationService.confirmationFor(shipment);
-            }
-            return output;
+
         } else if (shipment.getCargo().isEmpty()){
             return "ERROR CARGO IS EMPTY";
 
@@ -59,5 +50,19 @@ public class ShipmentService {
         }
 
         return "ERROR METHOD IS NOT METHODING";
+    }
+
+    public String NotifyShipmentTotal (Shipment shipment) {
+        String output;
+        if (shipment.getTotal() > 2000) {
+            output = "PRIORITY | " + shipment.getReference() + " | " + String.format("%.2f", shipment.getTotal());
+            repository.save(shipment);
+            output += " | " + notificationService.confirmationFor(shipment);
+        } else {
+            output = "REGULAR | " + shipment.getReference() + " | " + String.format("%.2f", shipment.getTotal());
+            repository.save(shipment);
+            output += " | " + notificationService.confirmationFor(shipment);
+        }
+        return output;
     }
 }

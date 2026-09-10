@@ -3,16 +3,9 @@ package main.service;
 public class ScheduleService {
     private final int[] departuresByDay = {4, 7, 3, 8, 12, 6, 2};
 
-    public int createMask(boolean monday, boolean tuesday, boolean wednesday,
-                          boolean thursday, boolean friday, boolean saturday, boolean sunday) {
-        int mask = 0;
-        if (monday) mask += 1;
-        if (tuesday) mask += 2;
-        if (wednesday) mask += 4;
-        if (thursday) mask += 8;
-        if (friday) mask += 16;
-        if (saturday) mask += 32;
-        if (sunday) mask += 64;
+    //replaced switch case to formula
+    public double createMaskByDayOfWeek(int dayOfTheWeek) {
+        double mask = Math.pow(2, dayOfTheWeek - 1);
         return mask;
     }
 
